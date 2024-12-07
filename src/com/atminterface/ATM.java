@@ -15,10 +15,47 @@ public class ATM {
 
     public void start() {
         System.out.println("==== Welcome to the ATM ====");
-        login();
-        if (currentUserId != null) {
-            showMenu();
+        initialMenu();
+        // After initialMenu finishes (if user logs in successfully), showMenu() is called in the login method.
+    }
+
+    // This is a new method that shows an initial menu for Sign Up or Log In
+    private void initialMenu() {
+        while (currentUserId == null) {
+            System.out.println("\n===== Initial Menu =====");
+            System.out.println("1. Sign Up");
+            System.out.println("2. Log In");
+            System.out.print("Choose an option: ");
+
+            String choice = scanner.nextLine().trim();
+            switch (choice) {
+                case "1":
+                    signUp();
+                    break;
+                case "2":
+                    login();
+                    break;
+                default:
+                    System.out.println("Invalid selection. Please try again.");
+                    break;
+            }
         }
+    }
+
+    // New method: Sign up process
+    private void signUp() {
+        System.out.print("Enter your name: ");
+        String name = scanner.nextLine().trim();
+        System.out.print("Enter your desired PIN: ");
+        String pin = scanner.nextLine().trim();
+
+        // Create a new user in the bank
+        String newUserId = bank.createNewUser(name, pin);
+        System.out.println("Sign Up successful!");
+        System.out.println("Your User ID is: " + newUserId);
+        System.out.println("Please remember your User ID and PIN. You will need them to log in.");
+
+        // After signing up, the user still needs to go back to the initial menu to log in.
     }
 
     private void login() {
@@ -30,6 +67,7 @@ public class ATM {
         if (bank.authenticateUser(userId, pin)) {
             currentUserId = userId;
             System.out.println("Login successful. Welcome, " + bank.getAccountHolder(currentUserId).getName() + "!");
+            showMenu();
         } else {
             System.out.println("Invalid user ID or PIN. Please try again.");
         }
@@ -122,4 +160,5 @@ public class ATM {
         }
     }
 }
+
 
